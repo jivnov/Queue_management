@@ -15,8 +15,8 @@ package body Terminal_task is
     Address : Sock_Addr_Type;
     Socket  : Socket_Type;
     Channel : Stream_Access;
-    Get_position : Integer;
-    Get_number   : Integer;
+    Get_position : Integer; -- position in queue from nanager_task
+    Get_number   : Integer; -- input var (should be 1)
 
   begin
 
@@ -33,7 +33,8 @@ package body Terminal_task is
 
     Channel := Stream (Socket);
 loop
-    Put_Line("Wprowadż 1 żeby dostać numer w kolejce: ");
+    Put_Line("Wprowadż liczbę żeby dostać numer w kolejce");
+    Put_Line("1 - kolejka zwykła; 2 - kolejka dla osób upoważnionych:");
     Get(Get_number);
 
     Integer'Output (Channel, Get_number);
@@ -41,8 +42,10 @@ loop
 
     Get_position := Integer'Input (Channel);
 
-    if Get_position /= 0 then
+    if Get_position /= 0 then -- if 0 -- repeat Get_number
         Put_Line ("Pozycja w kolejce: " & Get_position'Img);
+    elsif Get_position = 0 then
+        Put_Line ("Nieznana liczba");
     end if;
 
 end loop;

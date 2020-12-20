@@ -8,6 +8,9 @@ with Ada.Integer_Text_IO; use Ada.Integer_Text_Io;
 
 package body Manager_task is
 
+
+
+
   task body Management is
 
     Address  : Sock_Addr_Type;
@@ -15,8 +18,13 @@ package body Manager_task is
     Socket   : Socket_Type;
     Channel  : Stream_Access;
     Dane     : Integer := 0;
-    Queue    : Manager_task.Int_Array(1..10);
-    Position : Integer := 1;
+    Queue    : Manager_task.Int_Array(1..10); -- queue as array
+    Position_array : Integer := 1; -- position in array
+    Position_queue : Integer := 1; -- position in queue
+
+    Special_Queue       : Manager_task.Int_Array(1..10); -- special queue as array
+    Position_spec_array : Integer := 1; -- position in array
+    Position_spec_queue : Integer := 1; -- position in queue
 
   begin
 
@@ -38,9 +46,14 @@ loop
 
     Dane := Integer'Input (Channel);
 
-    if Dane = 1 then
 
-        Queue (Position) := Position;
+    if Position_array = 10 then -- renew enumeration in array when got max
+        Position_array := 1;
+    end if;
+
+    if Dane = 1 then -- check input, if not 1 or 2 -- repeat
+
+        Queue (Position_array) := Position_array;
 
 
 --      for Idx in Queue'First .. (Queue'Last) loop
@@ -48,8 +61,20 @@ loop
 --      end loop;
 
 
-        Integer'Output (Channel, (Queue(Position)));
-        Position := Position+1;
+        Integer'Output (Channel, Position_queue);
+
+        Position_array := Position_array+1;
+        Position_queue := Position_queue+1;
+
+    elsif Dane = 2 then
+
+        Special_Queue (Position_spec_array) := Position_spec_array;
+
+        Integer'Output (Channel, Position_spec_queue);
+
+        Position_spec_array := Position_spec_array+1;
+        Position_spec_queue :=  Position_spec_queue+1;
+        Position_queue := Position_queue+1;
 
     else
         Integer'Output (Channel, 0);
