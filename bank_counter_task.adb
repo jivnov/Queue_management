@@ -8,6 +8,7 @@ package body Bank_counter_task is
 
   begin
 
+Put_Line ("OK");
 
   end Counter;
 
