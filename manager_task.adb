@@ -13,10 +13,10 @@ package body Manager_task is
 
   task body Management is
 
-    Address  : Sock_Addr_Type;
-    Server   : Socket_Type;
-    Socket   : Socket_Type;
-    Channel  : Stream_Access;
+    Address_terminal  : Sock_Addr_Type;
+    Server_terminal   : Socket_Type;
+    Socket_terminal   : Socket_Type;
+    Channel_terminal  : Stream_Access;
     Dane     : Integer := 0;
     Queue    : Manager_task.Int_Array(1..10); -- queue as array
     Position_array : Integer := 1; -- position in array
@@ -25,26 +25,45 @@ package body Manager_task is
     Special_Queue       : Manager_task.Int_Array(1..10); -- special queue as array
     Position_spec_array : Integer := 1; -- position in array
     Position_spec_queue : Integer := 1; -- position in queue
+    --------
+--          Address_counter  : Sock_Addr_Type;
+--          Server_counter   : Socket_Type;
+--          Socket_counter   : Socket_Type;
+--          Channel_counter  : Stream_Access;
+--          Dane2     : Integer := 0;
 
   begin
+--            Address_counter.Addr := Addresses (Get_Host_By_Name (Host_Name), 1);
+--
+--            Address_counter.Port := 5875;
+--            Put_Line("Host: "&Host_Name);
+--            Put_Line("Adres:port = ("&Image(Address_counter)&")");
+--            Create_Socket (Server_counter);
+--            Set_Socket_Option (Server_counter, Socket_Level, (Reuse_Address, True));
+--            Bind_Socket (Server_counter, Address_counter);
+--            Listen_Socket (Server_counter);
+--            Accept_Socket (Server_counter, Socket_counter, Address_counter);
+--
+--            Channel_counter := Stream (Socket_counter);
 
-    Address.Addr := Addresses (Get_Host_By_Name (Host_Name), 1);
+    Address_terminal.Addr := Addresses (Get_Host_By_Name (Host_Name), 1);
 
-    Address.Port := 5876;
+    Address_terminal.Port := 5876;
     Put_Line("Host: "&Host_Name);
-    Put_Line("Adres:port = ("&Image(Address)&")");
-    Create_Socket (Server);
-    Set_Socket_Option (Server, Socket_Level, (Reuse_Address, True));
-    Bind_Socket (Server, Address);
-    Listen_Socket (Server);
-    Accept_Socket (Server, Socket, Address);
+    Put_Line("Adres:port = ("&Image(Address_terminal)&")");
+    Create_Socket (Server_terminal);
+    Set_Socket_Option (Server_terminal, Socket_Level, (Reuse_Address, True));
+    Bind_Socket (Server_terminal, Address_terminal);
+    Listen_Socket (Server_terminal);
+    Accept_Socket (Server_terminal, Socket_terminal, Address_terminal);
 
 
-    Channel := Stream (Socket);
+    Channel_terminal := Stream (Socket_terminal);
 
 loop
 
-    Dane := Integer'Input (Channel);
+    Dane := Integer'Input (Channel_terminal);
+
 
 
     if Position_array = 10 then -- renew enumeration in array when got max
@@ -61,7 +80,7 @@ loop
 --      end loop;
 
 
-        Integer'Output (Channel, Position_queue);
+        Integer'Output (Channel_terminal, Position_queue);
 
         Position_array := Position_array+1;
         Position_queue := Position_queue+1;
@@ -70,14 +89,14 @@ loop
 
         Special_Queue (Position_spec_array) := Position_spec_array;
 
-        Integer'Output (Channel, Position_spec_queue);
+        Integer'Output (Channel_terminal, Position_spec_queue);
 
         Position_spec_array := Position_spec_array+1;
         Position_spec_queue :=  Position_spec_queue+1;
         Position_queue := Position_queue+1;
 
     else
-        Integer'Output (Channel, 0);
+        Integer'Output (Channel_terminal, 0);
 
     end if;
 
