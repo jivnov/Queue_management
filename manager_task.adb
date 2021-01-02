@@ -1,107 +1,116 @@
-with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
-with Ada.Exceptions; use Ada.Exceptions;
-with GNAT.Sockets; use GNAT.Sockets;
-with Ada.Calendar; use Ada.Calendar;
-with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Integer_Text_IO; use Ada.Integer_Text_Io;
---  with GNAT.OS_Lib;
+with Ada.Text_IO, Ada.Integer_Text_IO, Ada.Numerics.Discrete_Random, Ada.Numerics.Float_Random, GNAT.Sockets;
+use Ada.Text_IO, GNAT.Sockets, Ada.Numerics.Float_Random,  Ada.Integer_Text_IO;
 
 package body Manager_task is
+    QueueCounter         : Natural := 0;
+    PriorityQueueCounter : Natural := 0;
+    Position             : Natural := 0;
+    PriorityPosition     : Natural := 0;
+    FirstInQueue         : Natural := 0;
+    FirstInPriorityQueue : Natural := 0;
+    Get_number           : Integer;
+
+
+    task body Terminal_Client is
+    begin
+        accept Start;
+        loop
+            select
+                accept GetPositionInQueue do
+                    Position := Position + 1; -- position in variable with queue
+                    QueueCounter := QueueCounter + 1; -- position in queue
+                    Put_Line("Pozycja w kolejce: " & QueueCounter'Img);
+                end GetPositionInQueue;
+               or
+                accept GetPositionInPriorityQueue do
+                    PriorityPosition := PriorityPosition + 1;
+                    QueueCounter := QueueCounter + 1;
+                    Put_Line("Pozycja w kolejce: " & PriorityPosition'Img);
+                end GetPositionInPriorityQueue;
+            end select;
+        end loop;
+    end Terminal_Client;
 
 
 
 
-  task body Management is
 
-    Address_terminal  : Sock_Addr_Type;
-    Server_terminal   : Socket_Type;
-    Socket_terminal   : Socket_Type;
-    Channel_terminal  : Stream_Access;
-    Dane     : Integer := 0;
-    Queue    : Manager_task.Int_Array(1..10); -- queue as array
-    Position_array : Integer := 1; -- position in array
-    Position_queue : Integer := 1; -- position in queue
-
-    Special_Queue       : Manager_task.Int_Array(1..10); -- special queue as array
-    Position_spec_array : Integer := 1; -- position in array
-    Position_spec_queue : Integer := 1; -- position in queue
-    --------
---          Address_counter  : Sock_Addr_Type;
---          Server_counter   : Socket_Type;
---          Socket_counter   : Socket_Type;
---          Channel_counter  : Stream_Access;
---          Dane2     : Integer := 0;
-
-  begin
---            Address_counter.Addr := Addresses (Get_Host_By_Name (Host_Name), 1);
---
---            Address_counter.Port := 5875;
---            Put_Line("Host: "&Host_Name);
---            Put_Line("Adres:port = ("&Image(Address_counter)&")");
---            Create_Socket (Server_counter);
---            Set_Socket_Option (Server_counter, Socket_Level, (Reuse_Address, True));
---            Bind_Socket (Server_counter, Address_counter);
---            Listen_Socket (Server_counter);
---            Accept_Socket (Server_counter, Socket_counter, Address_counter);
---
---            Channel_counter := Stream (Socket_counter);
-
-    Address_terminal.Addr := Addresses (Get_Host_By_Name (Host_Name), 1);
-
-    Address_terminal.Port := 5876;
-    Put_Line("Host: "&Host_Name);
-    Put_Line("Adres:port = ("&Image(Address_terminal)&")");
-    Create_Socket (Server_terminal);
-    Set_Socket_Option (Server_terminal, Socket_Level, (Reuse_Address, True));
-    Bind_Socket (Server_terminal, Address_terminal);
-    Listen_Socket (Server_terminal);
-    Accept_Socket (Server_terminal, Socket_terminal, Address_terminal);
-
-
-    Channel_terminal := Stream (Socket_terminal);
-
-loop
-
-    Dane := Integer'Input (Channel_terminal);
+    task body Terminal_Manager is
+    begin
+    accept Start;
+        loop
+            select
+                accept TakeFromQueue do
+                    QueueCounter := QueueCounter + 1;
+                    FirstInQueue := FirstInQueue + 1;
+                end TakeFromQueue;
+                or
+                accept TakeFromPriorityQueue do
+                    PriorityQueueCounter := PriorityQueueCounter + 1;
+                    FirstInPriorityQueue := FirstInPriorityQueue + 1;
+                end TakeFromPriorityQueue;
+            end select;
+        end loop;
+    end Terminal_Manager;
 
 
 
-    if Position_array = 10 then -- renew enumeration in array when got max
-        Position_array := 1;
-    end if;
 
-    if Dane = 1 then -- check input, if not 1 or 2 -- repeat
+    task body Manage_Bank_Operators is
+        Address_counter  : Sock_Addr_Type;
+        Server_counter   : Socket_Type;
+        Socket_counter   : Socket_Type;
+        Channel_counter  : Stream_Access;
+    begin
+        Address_counter.Addr := Addresses (Get_Host_By_Name (Host_Name), 1);
+        Address_counter.Port := 5875;
+        Put_Line("Host: "&Host_Name);
+        Put_Line("Adres:port = ("&Image(Address_counter)&")");
+        Create_Socket (Server_counter);
+        Set_Socket_Option (Server_counter, Socket_Level, (Reuse_Address, True));
+        Bind_Socket (Server_counter, Address_counter);
+        Listen_Socket (Server_counter);
+        Accept_Socket (Server_counter, Socket_counter, Address_counter);
 
-        Queue (Position_array) := Position_array;
+        Channel_counter := Stream (Socket_counter);
 
+-- TODO: Correct sending 'positions'
 
---      for Idx in Queue'First .. (Queue'Last) loop
---          Put_Line ("Element(" & Idx'Img & ") = " & Queue (Idx)'Img);
---      end loop;
+--          loop
+--              if FirstInPriorityQueue /= 0 then
+--                  Integer'Output(Channel_counter, FirstInPriorityQueue);
+--              elsif FirstInQueue /= 0 then
+--                  Integer'Output(Channel_counter, FirstInQueue);
+--              end if;
+--          end loop;
+        loop
+            if PriorityPosition /= 0 then
+                Terminal_Manager.TakeFromPriorityQueue;
+                Integer'Output(Channel_counter, FirstInPriorityQueue);
+            elsif Position /= 0 then
+                Terminal_Manager.TakeFromQueue;
+                Integer'Output(Channel_counter, FirstInQueue);
+            end if;
+        end loop;
 
+    end Manage_Bank_Operators;
 
-        Integer'Output (Channel_terminal, Position_queue);
+begin
 
-        Position_array := Position_array+1;
-        Position_queue := Position_queue+1;
+    Terminal_Client.Start;
+    Terminal_Manager.Start;
 
-    elsif Dane = 2 then
+    loop
+        Put_Line("Wprowadż liczbę żeby dostać numer w kolejce");
+        Put_Line("1 - kolejka zwykła; 2 - kolejka dla osób upoważnionych:");
+        Get(Get_number);
 
-        Special_Queue (Position_spec_array) := Position_spec_array;
-
-        Integer'Output (Channel_terminal, Position_spec_queue);
-
-        Position_spec_array := Position_spec_array+1;
-        Position_spec_queue :=  Position_spec_queue+1;
-        Position_queue := Position_queue+1;
-
-    else
-        Integer'Output (Channel_terminal, 0);
-
-    end if;
-
-end loop;
-
-  end Management;
-
+        if Get_number = 1 then
+            Terminal_Client.GetPositionInQueue;
+        elsif Get_number = 2 then
+            Terminal_Client.GetPositionInPriorityQueue;
+        else
+            Put_Line ("Nieznana liczba");
+        end if;
+    end loop;
 end Manager_task;

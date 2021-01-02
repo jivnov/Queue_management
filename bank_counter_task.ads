@@ -2,8 +2,13 @@ with System;
 
 package Bank_counter_task is
 
-  procedure Okno1(K : Integer);
+procedure ServeClient(K : Natural; Cl : Natural);
 
-  task Counter;
-
+--    task Operator;
+    task type Operator(OperatorID: Natural) is
+        entry Start;
+        entry TakeClient(Pos: Natural);
+        entry Finish;
+    end Operator;
+    task Counter;
 end Bank_counter_task;
