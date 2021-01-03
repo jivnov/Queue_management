@@ -2,12 +2,12 @@ with Ada.Text_IO, Ada.Integer_Text_IO, Ada.Numerics.Discrete_Random, Ada.Numeric
 use Ada.Text_IO, GNAT.Sockets, Ada.Numerics.Float_Random,  Ada.Integer_Text_IO;
 
 package body Manager_task is
-    QueueCounter         : Natural := 0;
-    PriorityQueueCounter : Natural := 0;
+    QueueCounter         : Natural := 1;
+    PriorityQueueCounter : Natural := 101;
     Position             : Natural := 0;
-    PriorityPosition     : Natural := 0;
-    FirstInQueue         : Natural := 0;
-    FirstInPriorityQueue : Natural := 0;
+    PriorityPosition     : Natural := 100;
+--      FirstInQueue         : Natural := 0;
+--      FirstInPriorityQueue : Natural := 0;
     Get_number           : Integer;
 
 
@@ -18,14 +18,15 @@ package body Manager_task is
             select
                 accept GetPositionInQueue do
                     Position := Position + 1; -- position in variable with queue
-                    QueueCounter := QueueCounter + 1; -- position in queue
-                    Put_Line("Pozycja w kolejce: " & QueueCounter'Img);
+--                      QueueCounter := QueueCounter + 1; -- position in queue
+                    Put_Line("Numer klenta: " & Position'Img);
                 end GetPositionInQueue;
                or
                 accept GetPositionInPriorityQueue do
                     PriorityPosition := PriorityPosition + 1;
-                    QueueCounter := QueueCounter + 1;
-                    Put_Line("Pozycja w kolejce: " & PriorityPosition'Img);
+--                      QueueCounter := QueueCounter + 1;
+--                      Position := Position + 1;
+                    Put_Line("Numer klienta: " & PriorityPosition'Img);
                 end GetPositionInPriorityQueue;
             end select;
         end loop;
@@ -42,12 +43,12 @@ package body Manager_task is
             select
                 accept TakeFromQueue do
                     QueueCounter := QueueCounter + 1;
-                    FirstInQueue := FirstInQueue + 1;
+--                      FirstInQueue := FirstInQueue + 1;
                 end TakeFromQueue;
                 or
                 accept TakeFromPriorityQueue do
                     PriorityQueueCounter := PriorityQueueCounter + 1;
-                    FirstInPriorityQueue := FirstInPriorityQueue + 1;
+--                      FirstInPriorityQueue := FirstInPriorityQueue + 1;
                 end TakeFromPriorityQueue;
             end select;
         end loop;
@@ -74,7 +75,6 @@ package body Manager_task is
 
         Channel_counter := Stream (Socket_counter);
 
--- TODO: Correct sending 'positions'
 
 --          loop
 --              if FirstInPriorityQueue /= 0 then
@@ -84,12 +84,12 @@ package body Manager_task is
 --              end if;
 --          end loop;
         loop
-            if PriorityPosition /= 0 then
+            if PriorityPosition = PriorityQueueCounter then
                 Terminal_Manager.TakeFromPriorityQueue;
-                Integer'Output(Channel_counter, FirstInPriorityQueue);
-            elsif Position /= 0 then
+                Integer'Output(Channel_counter, PriorityPosition);
+            elsif Position = QueueCounter then
                 Terminal_Manager.TakeFromQueue;
-                Integer'Output(Channel_counter, FirstInQueue);
+                Integer'Output(Channel_counter, Position);
             end if;
         end loop;
 
@@ -99,6 +99,7 @@ begin
 
     Terminal_Client.Start;
     Terminal_Manager.Start;
+    delay 1.0;
 
     loop
         Put_Line("Wprowadż liczbę żeby dostać numer w kolejce");
