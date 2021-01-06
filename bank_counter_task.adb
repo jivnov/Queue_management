@@ -1,5 +1,3 @@
-
-
 package body Bank_counter_task is
 
    protected body Semaphore_Int is
@@ -74,7 +72,6 @@ package body Bank_counter_task is
       Channel : Stream_Access;
     begin
 
-    Put_Line ("OK");
 
     Address.Addr := Addresses (Get_Host_By_Name (Host_Name), 1);
     Address.Port := 5875;
