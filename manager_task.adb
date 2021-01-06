@@ -3,9 +3,9 @@ use Ada.Text_IO, GNAT.Sockets, Ada.Numerics.Float_Random,  Ada.Integer_Text_IO;
 
 package body Manager_task is
     QueueCounter         : Natural := 1;
-    PriorityQueueCounter : Natural := 101;
+    PriorityQueueCounter : Natural := 1001;
     Position             : Natural := 0;
-    PriorityPosition     : Natural := 100;
+    PriorityPosition     : Natural := 1000;
 --      FirstInQueue         : Natural := 0;
 --      FirstInPriorityQueue : Natural := 0;
     Get_number           : Integer;
