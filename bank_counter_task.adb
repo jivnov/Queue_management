@@ -18,7 +18,7 @@ package body Bank_counter_task is
     end Semaphore_Int;
 
    protected body Semaphore_Int is
-   
+
       entry Take_place when Count > 0 is
        begin
           Count := Count - 1; -- odejmujemy jedno z "miejsc" jezeli zostało zajęto zadaniem
@@ -42,11 +42,13 @@ package body Bank_counter_task is
       --S.Take_place;
       Put_Line("Operator "& K'Img &", obsluguję klienta nr. " & Cl'Img);
       delay Standard.Duration(DelayTime);
+      Put_Line("Operator "& K'Img &", wolny");
       --S.Free_place;
     end ServeClient;
 
 
     task body Operator is
+        ClientID : Natural := 100500;
         BreakAfter: Integer := 20;
         isFree : Boolean := True;
     begin
@@ -60,10 +62,11 @@ package body Bank_counter_task is
             if BreakAfter > 0 then
                 select
                     accept TakeClient(Pos: in Integer) do
-                        ServeClient(OperatorID, Pos);
                         BreakAfter := BreakAfter - 1;
+                        ClientID := Pos;
                     end TakeClient;
-                    Put_Line("Operator "& OperatorID'Img &", wolny");
+                    ServeClient(OperatorID, ClientID);
+                    delay 1.5;
                     Counter.TakeNextClient(OperatorID);
                 or
                     accept Finish;
