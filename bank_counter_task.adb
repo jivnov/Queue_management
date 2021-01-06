@@ -8,6 +8,7 @@ with Ada.Integer_Text_IO; use Ada.Integer_Text_Io;
 package body Bank_counter_task is
     NextInQueue : Natural := 0;
     Gen: Generator;
+    OpID : Natural := 0;
 
    protected type Semaphore_Int (Init_Sem : Integer) is -- counting semaphore
        entry Take_place;
@@ -17,7 +18,7 @@ package body Bank_counter_task is
     end Semaphore_Int;
 
    protected body Semaphore_Int is
-
+   
       entry Take_place when Count > 0 is
        begin
           Count := Count - 1; -- odejmujemy jedno z "miejsc" jezeli zostało zajęto zadaniem
@@ -41,13 +42,11 @@ package body Bank_counter_task is
       --S.Take_place;
       Put_Line("Operator "& K'Img &", obsluguję klienta nr. " & Cl'Img);
       delay Standard.Duration(DelayTime);
-      Put_Line("Operator "& K'Img &", wolny");
       --S.Free_place;
     end ServeClient;
 
 
     task body Operator is
---          ClientID: Natural;
         BreakAfter: Integer := 20;
         isFree : Boolean := True;
     begin
@@ -61,11 +60,11 @@ package body Bank_counter_task is
             if BreakAfter > 0 then
                 select
                     accept TakeClient(Pos: in Integer) do
-                        Put_Line("next client");
                         ServeClient(OperatorID, Pos);
                         BreakAfter := BreakAfter - 1;
-                        Counter.TakeNextClient(OperatorID);
                     end TakeClient;
+                    Put_Line("Operator "& OperatorID'Img &", wolny");
+                    Counter.TakeNextClient(OperatorID);
                 or
                     accept Finish;
                     exit;
@@ -108,15 +107,10 @@ package body Bank_counter_task is
 
     loop
         accept TakeNextClient(OperatorID: Natural) do
-            S.Take_place;
             NextInQueue := Integer'Input (Channel);
-            Put_Line("Next... " & Operators(OperatorID).OperatorID'Img);
-            -- PROBLEM W NASTEPNEJ LINIJCE
-            Operators(OperatorID).TakeClient(NextInQueue);
-            Put_Line("Next... " & NextInQueue'Img);
-            delay 0.5;
-            S.Free_place;
+            OpID := OperatorID;
         end TakeNextClient;
+        Operators(OpID).TakeClient(NextInQueue);
     end loop;
 
   end Counter;

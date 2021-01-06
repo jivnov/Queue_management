@@ -1,0 +1,183 @@
+V "GNAT Lib v8"
+P ZX
+
+RN
+RV NO_DELAY
+RV NO_ENTRY_CALLS_IN_ELABORATION_CODE
+RV NO_EXCEPTION_HANDLERS
+RV NO_EXCEPTIONS
+RV NO_FIXED_POINT
+RV NO_IO
+RV NO_RELATIVE_DELAY
+RV NO_SECONDARY_STACK
+RV NO_SELECT_STATEMENTS
+RV NO_STANDARD_STORAGE_POOLS
+RV NO_STREAMS
+RV NO_TASKING
+RV NO_DEFAULT_INITIALIZATION
+RV NO_DYNAMIC_SIZED_OBJECTS
+RV NO_IMPLEMENTATION_ATTRIBUTES
+RV NO_ELABORATION_CODE
+RV SPARK_05
+RV MAX_SELECT_ALTERNATIVES=2
+RV MAX_TASK_ENTRIES=3
+RV MAX_TASKS=3
+
+U manager_task%b	manager_task.adb	79a685f7 OO PK
+W ada%s			ada.ads			ada.ali
+Z ada.calendar.delays%s	a-caldel.adb		a-caldel.ali
+W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
+W ada.numerics%s	a-numeri.ads		a-numeri.ali
+W ada.numerics.discrete_random%s
+W ada.numerics.float_random%s  a-nuflra.adb	a-nuflra.ali
+Z ada.streams%s		a-stream.adb		a-stream.ali
+Z ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W gnat%s		gnat.ads		gnat.ali
+W gnat.sockets%s	g-socket.adb		g-socket.ali
+Z system%s		system.ads		system.ali
+Z system.concat_2%s	s-conca2.adb		s-conca2.ali
+Z system.concat_3%s	s-conca3.adb		s-conca3.ali
+Z system.img_int%s	s-imgint.adb		s-imgint.ali
+Z system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+Z system.soft_links%s	s-soflin.adb		s-soflin.ali
+Z system.stream_attributes%s  s-stratt.adb	s-stratt.ali
+Z system.tasking%s	s-taskin.adb		s-taskin.ali
+Z system.tasking.rendezvous%s  s-tasren.adb	s-tasren.ali
+Z system.tasking.stages%s  s-tassta.adb		s-tassta.ali
+
+U manager_task%s	manager_task.ads	88fd407c EE OO PK
+Z ada.real_time%s	a-reatim.adb		a-reatim.ali
+Z ada.tags%s		a-tags.adb		a-tags.ali
+W system%s		system.ads		system.ali
+Z system.parameters%s	s-parame.adb		s-parame.ali
+Z system.soft_links%s	s-soflin.adb		s-soflin.ali
+Z system.task_info%s	s-tasinf.adb		s-tasinf.ali
+Z system.tasking%s	s-taskin.adb		s-taskin.ali
+Z system.tasking.stages%s  s-tassta.adb		s-tassta.ali
+
+D ada.ads		20200304083000 76789da1 ada%s
+D a-calend.ads		20200304083000 2d5f01d4 ada.calendar%s
+D a-caldel.ads		20200304083000 9f20b83d ada.calendar.delays%s
+D a-except.ads		20200304083000 291912d5 ada.exceptions%s
+D a-finali.ads		20200304083000 bf4f806b ada.finalization%s
+D a-inteio.ads		20200304083000 f64b89a4 ada.integer_text_io%s
+D a-ioexce.ads		20200304083000 e4a01f64 ada.io_exceptions%s
+D a-numeri.ads		20200304083000 bb51c45a ada.numerics%s
+D a-nudira.ads		20200304083000 71e55def ada.numerics.discrete_random%s
+D a-nudira.adb		20200304083000 72908cdb ada.numerics.discrete_random%b
+D a-nuflra.ads		20200304083000 4056ab7a ada.numerics.float_random%s
+D a-reatim.ads		20200304083000 a87e2da7 ada.real_time%s
+D a-stream.ads		20200304083000 119b8fb3 ada.streams%s
+D a-tags.ads		20200304083000 491b781d ada.tags%s
+D a-textio.ads		20200304083000 881db35a ada.text_io%s
+D a-tiinio.ads		20200304083000 aa04e5d6 ada.text_io.integer_io%s
+D a-unccon.ads		20200304083000 0e9b276f ada.unchecked_conversion%s
+D a-uncdea.ads		20200304083000 eff36322 ada.unchecked_deallocation%s
+D gnat.ads		20200304083000 fd2ad2f1 gnat%s
+D g-socket.ads		20200304083000 e8c63e95 gnat.sockets%s
+D interfac.ads		20200304083000 5ab55268 interfaces%s
+D i-c.ads		20200304083000 5421119b interfaces.c%s
+D i-cstrea.ads		20200304083000 e53d8b8e interfaces.c_streams%s
+D manager_task.ads	20210105123738 cec8ac78 manager_task%s
+D manager_task.adb	20210106132441 104ddb71 manager_task%b
+D system.ads		20200304083000 4635ec04 system%s
+D s-atacco.ads		20200304083000 4c36d12f system.address_to_access_conversions%s
+D s-conca2.ads		20200304083000 02a0d7d0 system.concat_2%s
+D s-conca3.ads		20200304083000 0b705ca5 system.concat_3%s
+D s-crtl.ads		20200304083000 0ebbdb71 system.crtl%s
+D s-exctab.ads		20200304083000 54135002 system.exception_table%s
+D s-ficobl.ads		20200304083000 078245e4 system.file_control_block%s
+D s-finmas.ads		20200304083000 7811a767 system.finalization_masters%s
+D s-finroo.ads		20200304083000 4ff27390 system.finalization_root%s
+D s-imgint.ads		20200304083000 02dbe0c2 system.img_int%s
+D s-linux.ads		20200304083000 2fda6ad1 system.linux%s
+D s-multip.ads		20200304083000 38ac9f73 system.multiprocessors%s
+D s-oscons.ads		20200310122954 2a880dab system.os_constants%s
+D s-osinte.ads		20200304083000 c6986a0c system.os_interface%s
+D s-parame.ads		20200304083000 f896c45c system.parameters%s
+D s-pooglo.ads		20200304083000 ede33ef8 system.pool_global%s
+D s-rannum.ads		20200304083000 99ade2f2 system.random_numbers%s
+D s-secsta.ads		20200304083000 283dec34 system.secondary_stack%s
+D s-soflin.ads		20200304083000 a7318a92 system.soft_links%s
+D s-stache.ads		20200304083000 a37c21ec system.stack_checking%s
+D s-stausa.ads		20200304083000 017a0a05 system.stack_usage%s
+D s-stalib.ads		20200304083000 09bd3940 system.standard_library%s
+D s-stoele.ads		20200304083000 2dc34a04 system.storage_elements%s
+D s-stopoo.ads		20200304083000 b16154c2 system.storage_pools%s
+D s-stratt.ads		20200304083000 aedef97e system.stream_attributes%s
+D s-tasinf.ads		20200304083000 2b3f8252 system.task_info%s
+D s-taspri.ads		20200304083000 f40ac08d system.task_primitives%s
+D s-taprop.ads		20200304083000 1dd2e1b6 system.task_primitives.operations%s
+D s-taskin.ads		20200304083000 1d8c1ccb system.tasking%s
+D s-taprob.ads		20200304083000 acd6094d system.tasking.protected_objects%s
+D s-tpoben.ads		20200304083000 60ad3dae system.tasking.protected_objects.entries%s
+D s-tasren.ads		20200304083000 a67a9949 system.tasking.rendezvous%s
+D s-tassta.ads		20200304083000 cca55c94 system.tasking.stages%s
+D s-traent.ads		20200304083000 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20200304083000 34867c83 system.unsigned_types%s
+D s-wchcon.ads		20200304083000 1b7d22d2 system.wch_con%s
+X 1 ada.ads
+16K9*Ada 20e8 25|1r6 1r19 1r40 1r70 2r5 2r32 2r60
+X 6 a-inteio.ads
+18K13*Integer_Text_IO[16|46] 25|1w23 2r64
+X 8 a-numeri.ads
+16K13*Numerics 32e17 25|1r44 1r74 2r36
+X 9 a-nudira.ads
+44k22*Discrete_Random 75e33 25|1w53
+X 11 a-nuflra.ads
+41K22*Float_Random 74e30 25|1w83 2r45
+X 15 a-textio.ads
+49K13*Text_IO 471e16 25|1w10 2r9
+263U14*Put_Line 25|22s21 29s21 68s9 69s9 105s9 106s9 114s13
+X 16 a-tiinio.ads
+56U14*Get 25|107s9[6|18]
+X 19 gnat.ads
+34K9*GNAT 37e9 25|1r97 2r18
+X 20 g-socket.ads
+55K14*Sockets 1288e17 25|1w102 2r23
+412I9*Socket_Type<integer> 25|62r28 63r28
+483I9*Port_Type<integer>
+509R9*Sock_Addr_Type 512e14 25|61r28
+510r7*Addr{492R9} 25|66m25
+511i7*Port{483I9} 25|67m25
+526V13*Image{string} 25|69s35
+554V13*Addresses{492R9} 25|66s33
+571V13*Get_Host_By_Name{537R9} 25|66s44
+577V13*Host_Name{string} 25|66s62 68s27
+677n7*Socket_Level{676E9} 25|71r44
+689n7*Reuse_Address{686E9} 25|71r59
+821U14*Create_Socket 25|70s9
+827U14*Accept_Socket 25|74s9
+852U14*Bind_Socket 25|72s9
+905U14*Listen_Socket 25|73s9
+1012U14*Set_Socket_Option 25|71s9
+1025P9*Stream_Access(13|39R9) 25|64r28
+1028V13*Stream{1025P9} 25|76s28
+X 24 manager_task.ads
+3K9*Manager_task 22l5 22e17 25|4b14 117l5 117t17
+8t10*Terminal_Client 25|14b15 33l9 33t24 100r5 110r13 112r13
+9Y15 Start 25|16b16 100s21
+10Y15 GetPositionInQueue 25|19b24 23l21 23t39 110s29
+11Y15 GetPositionInPriorityQueue 25|25b24 30l21 30t47 112s29
+14t11*Terminal_Manager 25|39b15 55l9 55t25 88r17 91r17 101r5
+15Y15 Start 25|41b12 101s22
+16Y15 TakeFromQueue 25|44b24 47l21 47t34 91s34
+17Y15 TakeFromPriorityQueue 25|49b24 52l21 52t42 88s34
+20t10*Manage_Bank_Operators 25|60b15 96l9 96t30
+X 25 manager_task.adb
+5i5 QueueCounter{natural} 45m21 45r37 90r30
+6i5 PriorityQueueCounter{natural} 50m21 50r45 87r35
+7i5 Position{natural} 20m21 20r33 22r49 90r19 92r49
+8i5 PriorityPosition{natural} 26m21 26r41 29r50 87r16 89r49
+11i5 Get_number{integer} 107m13 109r12 111r15
+61r9 Address_counter{20|509R9} 66m9 67m9 69r41 72r38 74m56
+62i9 Server_counter{20|412I9} 70m24 71r28 72r22 73r24 74r24
+63i9 Socket_counter{20|412I9} 74m40 76r36
+64p9 Channel_counter{20|1025P9} 76m9 89r32 92r32
+X 26 system.ads
+37K9*System 24|1w6 26|156e11
+X 46 s-stausa.ads
+203U14*Initialize 204i<c,__gnat_stack_usage_initialize>22
+268U14*Output_Results 272i<c,__gnat_stack_usage_output_results>22
+

@@ -87,11 +87,9 @@ package body Manager_task is
             if PriorityPosition = PriorityQueueCounter then
                 Terminal_Manager.TakeFromPriorityQueue;
                 Integer'Output(Channel_counter, PriorityPosition);
-                Put_Line("sending " & PriorityPosition'Img);
             elsif Position = QueueCounter then
                 Terminal_Manager.TakeFromQueue;
                 Integer'Output(Channel_counter, Position);
-                Put_Line("sending " & Position'Img);
             end if;
         end loop;
 
