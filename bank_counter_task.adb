@@ -30,21 +30,19 @@ package body Bank_counter_task is
 
    end Semaphore_Int;
 
-    S : Semaphore_Int (2);
+    S : Semaphore_Int (1);
 
 
-
-
-    procedure ServeClient(K : Natural; Cl : Natural) is
+    procedure ServeClient(K : Natural; Cl : Integer) is
        DelayTime : Float := 1.0;
     begin
       Reset(Gen);
       DelayTime := Random(Gen) * 4.0 + 1.0; -- klient moze byc obslugiwany przez od 1 do 5 sekund
-      S.Take_place;
+      --S.Take_place;
       Put_Line("Operator "& K'Img &", obsluguję klienta nr. " & Cl'Img);
       delay Standard.Duration(DelayTime);
       Put_Line("Operator "& K'Img &", wolny");
-      S.Free_place;
+      --S.Free_place;
     end ServeClient;
 
 
@@ -53,16 +51,20 @@ package body Bank_counter_task is
         BreakAfter: Integer := 20;
         isFree : Boolean := True;
     begin
+        accept Start do
+            Put_Line("Operator " & OperatorID'Img & " rozpoczął pracę.");
+        end Start;
         Reset(Gen);
         BreakAfter := Integer(Random(Gen) * 10.0 + 5.0);
-        accept Start;
-        Put_Line("Operator " & OperatorID'Img & " rozpoczął pracę.");
+        Counter.TakeNextClient(OperatorID);
         loop
             if BreakAfter > 0 then
                 select
-                    accept TakeClient(Pos: Natural) do
+                    accept TakeClient(Pos: in Integer) do
+                        Put_Line("next client");
                         ServeClient(OperatorID, Pos);
                         BreakAfter := BreakAfter - 1;
+                        Counter.TakeNextClient(OperatorID);
                     end TakeClient;
                 or
                     accept Finish;
@@ -76,19 +78,18 @@ package body Bank_counter_task is
             end if;
         end loop;
     end Operator;
+
     -- jakis task typu break manager
 
-    Op1 : Operator(1);
-    Op2 : Operator(2);
-
+    Operators: array(1..2) of OperatorAccess;
 
     task body Counter is
-        Address : Sock_Addr_Type;
+      Address : Sock_Addr_Type;
       Socket  : Socket_Type;
       Channel : Stream_Access;
     begin
 
---      Put_Line ("OK");
+    Put_Line ("OK");
 
     Address.Addr := Addresses (Get_Host_By_Name (Host_Name), 1);
     Address.Port := 5875;
@@ -100,18 +101,24 @@ package body Bank_counter_task is
 
     Channel := Stream (Socket);
 
-    Op1.Start;
-    Op2.Start;
+    for I in 1..2 loop
+        Operators(I) := new Operator(I);
+        Operators(I).Start;
+    end loop;
 
     loop
-        NextInQueue := Integer'Input (Channel);
-        Op1.TakeClient(NextInQueue);
-        NextInQueue := Integer'Input (Channel);
-        Op2.TakeClient(NextInQueue);
+        accept TakeNextClient(OperatorID: Natural) do
+            S.Take_place;
+            NextInQueue := Integer'Input (Channel);
+            Put_Line("Next... " & Operators(OperatorID).OperatorID'Img);
+            -- PROBLEM W NASTEPNEJ LINIJCE
+            Operators(OperatorID).TakeClient(NextInQueue);
+            Put_Line("Next... " & NextInQueue'Img);
+            delay 0.5;
+            S.Free_place;
+        end TakeNextClient;
     end loop;
 
   end Counter;
 
---  begin
---      null;
 end Bank_counter_task;
