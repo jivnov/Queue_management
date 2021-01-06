@@ -4,5 +4,5 @@
 # Ada Library Information
 *.ali
 
-# Unignore all with extensions
+# Unignore binary files
 !*.*
