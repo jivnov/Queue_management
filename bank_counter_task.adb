@@ -110,6 +110,7 @@ package body Bank_counter_task is
 
     loop
         accept TakeNextClient(OperatorID: Natural) do
+            Integer'Output(Channel, 0);
             NextInQueue := Integer'Input (Channel);
             OpID := OperatorID;
         end TakeNextClient;

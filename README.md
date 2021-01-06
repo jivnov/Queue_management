@@ -2,7 +2,7 @@
 
 Project "Bank Queue Management".
 
-## Compilation
+## Building
 ```
 gprbuild -P queue_management.gpr
 ```

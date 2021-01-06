@@ -11,7 +11,7 @@ procedure ServeClient(K : Natural; Cl : Integer);
         entry Finish;
     end Operator;
     type OperatorAccess is access Operator;
-    task Counter is 
+    task Counter is
         entry TakeNextClient(OperatorID: Natural);
     end Counter;
 end Bank_counter_task;

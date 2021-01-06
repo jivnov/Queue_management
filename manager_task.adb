@@ -10,6 +10,7 @@ package body Manager_task is
 --      FirstInPriorityQueue : Natural := 0;
     Get_number           : Integer;
 
+    Acception : Integer;
 
     task body Terminal_Client is
     begin
@@ -32,7 +33,7 @@ package body Manager_task is
         end loop;
     end Terminal_Client;
 
-
+--TODO MIMUS 99
 
 
 
@@ -84,12 +85,18 @@ package body Manager_task is
 --              end if;
 --          end loop;
         loop
-            if PriorityPosition = PriorityQueueCounter then
+            if Acception /= 0 then
+                Acception := Integer'Input (Channel_counter);
+            elsif Acception = 0 then
+            if PriorityPosition >= PriorityQueueCounter then
                 Terminal_Manager.TakeFromPriorityQueue;
-                Integer'Output(Channel_counter, PriorityPosition);
-            elsif Position = QueueCounter then
+                Acception := Acception +1;
+                Integer'Output(Channel_counter, PriorityQueueCounter-1);
+            elsif Position >= QueueCounter then
                 Terminal_Manager.TakeFromQueue;
-                Integer'Output(Channel_counter, Position);
+                Acception := Acception +1;
+                Integer'Output(Channel_counter, QueueCounter-1);
+            end if;
             end if;
         end loop;
 
