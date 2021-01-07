@@ -27,7 +27,7 @@ package Manager_task is
         entry Finish;
     end Terminal_Client;
 
-     task Terminal_Manager is
+    task Terminal_Manager is
         entry Start;
         entry TakeFromQueue;
         entry TakeFromPriorityQueue;

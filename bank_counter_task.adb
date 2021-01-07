@@ -90,11 +90,16 @@ package body Bank_counter_task is
         accept TakeNextClient(OperatorID: Natural) do
             Integer'Output(Channel, 0); -- jak operator się zwolni wysyłamy zero żeby dostać kolejny numer klienta
             NextInQueue := Integer'Input (Channel);
-            if NextInQueue = 0 then -- jeżeli użytkownik chce skońcyć działanie programu to dostajemy 0 i przerywamy
-                GNAT.OS_Lib.OS_Exit (0);
-            end if;
             OpID := OperatorID;
         end TakeNextClient;
+        if NextInQueue = 0 then -- jeżeli użytkownik chce skońcyć działanie programu to dostajemy 0 i przerywamy
+            Put_Line("received 0");
+            for I in 1..5 loop
+                Operators(I).Finish;
+                Put_Line("Finishing" & I'Img);
+            end loop;
+            exit;
+        end if;
         Operators(OpID).TakeClient(NextInQueue); -- wysyłamy klienta do oparatora
     end loop;
 

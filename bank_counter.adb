@@ -6,7 +6,5 @@ use  Ada.Text_IO;
 procedure Bank_counter is
   pragma Priority (System.Priority'First);
 begin
-  loop
-    null;
-  end loop;
+  null;
 end Bank_counter;

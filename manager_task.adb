@@ -63,6 +63,7 @@ package body Manager_task is
         loop
             if ExitVar = 0 then -- wysyłanie żądania zakończenia programu
                 Integer'Output(Channel_manager, ExitVar);
+                exit;
             end if;
             if Acception /= 0 then -- czekamy na zwolnienie operatora
                 Acception := Integer'Input (Channel_manager);
