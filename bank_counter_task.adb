@@ -93,11 +93,8 @@ package body Bank_counter_task is
             OpID := OperatorID;
         end TakeNextClient;
         if NextInQueue = 0 then -- jeżeli użytkownik chce skońcyć działanie programu to dostajemy 0 i przerywamy
-            Put_Line("received 0");
-            for I in 1..5 loop
-                Operators(I).Finish;
-                Put_Line("Finishing" & I'Img);
-            end loop;
+            Put_Line("Manager nie działa");
+            Operators(OpID).Finish;
             exit;
         end if;
         Operators(OpID).TakeClient(NextInQueue); -- wysyłamy klienta do oparatora
