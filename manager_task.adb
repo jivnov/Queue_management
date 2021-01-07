@@ -5,19 +5,20 @@ package body Manager_task is
     PriorityPosition     : Natural := 1000;
     Get_number           : Integer;
     Acception            : Integer;
+    ExitVar              : Integer := 1;
 
-    task body Terminal_Client is
+    task body Terminal_Client is -- określenie ilości klientów w kolejce
     begin
         accept Start;
         loop
             select
                 accept GetPositionInQueue do
-                    Position := Position + 1; -- position in variable with queue
-                    Put_Line("Numer klenta: " & Position'Img);
+                    Position := Position + 1; -- numer nowego klienta
+                    Put_Line("Numer klenta: " & Position'Img); -- wypisywanie numera
                 end GetPositionInQueue;
-                or
+            or
                 accept GetPositionInPriorityQueue do
-                    PriorityPosition := PriorityPosition + 1;
+                    PriorityPosition := PriorityPosition + 1; -- numer nowego prior. klienta
                     Put_Line("Numer klienta: " & PriorityPosition'Img);
                 end GetPositionInPriorityQueue;
             end select;
@@ -26,17 +27,17 @@ package body Manager_task is
 
 
 
-    task body Terminal_Manager is
+    task body Terminal_Manager is -- określenie pierwszego klienta w kolejkach
     begin
     accept Start;
         loop
             select
                 accept TakeFromQueue do
-                    QueueCounter := QueueCounter + 1;
+                    QueueCounter := QueueCounter + 1; -- pierwzy numer w kolejce zwykłej
                 end TakeFromQueue;
-                or
+            or
                 accept TakeFromPriorityQueue do
-                    PriorityQueueCounter := PriorityQueueCounter + 1;
+                    PriorityQueueCounter := PriorityQueueCounter + 1; -- pierwzy numer w kolejce prior.
                 end TakeFromPriorityQueue;
             end select;
         end loop;
@@ -64,18 +65,21 @@ package body Manager_task is
         Channel_manager := Stream (Socket_manager);
 
         loop
-            if Acception /= 0 then
-                Acception := Integer'Input (Channel_manager);
-            elsif Acception = 0 then
-            if PriorityPosition >= PriorityQueueCounter then
-                Terminal_Manager.TakeFromPriorityQueue;
-                Acception := Acception +1;
-                Integer'Output(Channel_manager, PriorityQueueCounter-1);
-            elsif Position >= QueueCounter then
-                Terminal_Manager.TakeFromQueue;
-                Acception := Acception +1;
-                Integer'Output(Channel_manager, QueueCounter-1);
+            if ExitVar = 0 then -- wysyłanie żądania zakończenia programu
+                Integer'Output(Channel_manager, ExitVar);
             end if;
+            if Acception /= 0 then -- czekamy na zwolnienie operatora
+                Acception := Integer'Input (Channel_manager);
+            elsif Acception = 0 then -- jak dostaniemy 0 sprawdzamy czy są nowe osoby w kolejce prior.
+                if PriorityPosition >= PriorityQueueCounter then
+                    Terminal_Manager.TakeFromPriorityQueue; -- zmieniamy numer pierwszego klienta
+                    Acception := Acception + 1; -- zmieniamy licznik po wysłaniu nowego numera klienta
+                    Integer'Output(Channel_manager, PriorityQueueCounter-1); -- wysyłamy
+                elsif Position >= QueueCounter then -- jak nie, to sprawdzamy czy są nowe osoby w kolejce zwykłej
+                    Terminal_Manager.TakeFromQueue;
+                    Acception := Acception + 1;
+                    Integer'Output(Channel_manager, QueueCounter-1);
+                end if;
             end if;
         end loop;
 
@@ -88,16 +92,21 @@ begin
     delay 1.0;
 
     loop
-        Put_Line("Wprowadż liczbę żeby dostać numer w kolejce");
+        Put_Line("Wprowadż liczbę żeby dostać numer w kolejce lub 0 żeby skończyć");
         Put_Line("1 - kolejka zwykła; 2 - kolejka dla osób upoważnionych:");
-        Get(Get_number);
+        Get(Get_number); -- wprowadzenie licczby od użytkownika
 
         if Get_number = 1 then
-            Terminal_Client.GetPositionInQueue;
+            Terminal_Client.GetPositionInQueue; -- zapisywanie do kolejki zwykłej
         elsif Get_number = 2 then
-            Terminal_Client.GetPositionInPriorityQueue;
+            Terminal_Client.GetPositionInPriorityQueue; -- zapisywanie do kolejki prior.
+        elsif Get_number = 0 then -- zakończenie działanie programu jeżeli użytkownik wprowadzi 0
+            ExitVar := 0;
+            Put_Line ("Zakończenie");
+            delay 1.0;
+            GNAT.OS_Lib.OS_Exit (0);
         else
-            Put_Line ("Nieznana liczba");
+            Put_Line ("Nieznana liczba"); -- liczby poza 0,1,2 nie są przyjmowane
         end if;
     end loop;
 end Manager_task;

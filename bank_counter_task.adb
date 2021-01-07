@@ -1,23 +1,23 @@
 package body Bank_counter_task is
 
-   protected body Semaphore_Int is
+    protected body Semaphore_Int is
 
-      entry Take_Break when Count > 0 is
-       begin
-          Count := Count - 1; -- odejmujemy jedno z "miejsc" jezeli zostało zajęto zadaniem
-       end Take_Break;
+        entry Take_Break when Count > 0 is
+            begin
+                Count := Count - 1; -- odejmujemy jedno z "miejsc" jezeli operator na przerwie
+        end Take_Break;
 
-      procedure Back_To_Work is
-       begin
-          Count := Count + 1; -- dodajemy do licznika "miejsce" jak jedno z zadań skońcy działanie
-       end Back_To_Work;
+        procedure Back_To_Work is
+            begin
+                Count := Count + 1; -- dodajemy do licznika "miejsce" jak operator skońcy przerwę
+        end Back_To_Work;
 
-   end Semaphore_Int;
+    end Semaphore_Int;
 
-    S : Semaphore_Int (2);
+    S : Semaphore_Int (2); -- określamy ile operatorów może być na przerwie
 
 
-    procedure ServeClient(K : Natural; Cl : Integer) is
+    procedure ServeClient(K : Natural; Cl : Integer) is -- obsługa klienta
        DelayTime : Float := 1.0;
     begin
       Reset(Gen);
@@ -30,7 +30,7 @@ package body Bank_counter_task is
 
     task body Operator is
         ClientID : Natural := 100500;
-        BreakAfter: Integer := 20;
+        BreakAfter: Integer := 20; -- ile może być klientów przed przerwą
         isFree : Boolean := True;
     begin
         accept Start do
@@ -38,23 +38,23 @@ package body Bank_counter_task is
         end Start;
         Reset(Gen);
         BreakAfter := Integer(Random(Gen) * 10.0 + 5.0);
-        Counter.TakeNextClient(OperatorID);
+        Counter.TakeNextClient(OperatorID); -- po starcie "zapraszamy" nowego klienta
         loop
             select
-                accept TakeClient(Pos: in Integer) do
-                    BreakAfter := BreakAfter - 1;
+                accept TakeClient(Pos: in Integer) do -- przyjęcie klienta
+                    BreakAfter := BreakAfter - 1; -- zmieniamy ilość klientów do przerwy
                     ClientID := Pos;
                 end TakeClient;
                 ServeClient(OperatorID, ClientID);
                 delay 1.5;
-                if BreakAfter = 0 then
+                if BreakAfter = 0 then -- przerwa
                     S.Take_Break;
                     Put_Line("Operator " & OperatorID'Img & " ma przerwę");
                     delay 10.0;
-                    BreakAfter := Integer(Random(Gen) * 10.0 + 5.0);
+                    BreakAfter := Integer(Random(Gen) * 10.0 + 5.0); -- nowa ilość klientów przed przerwą
                     S.Back_To_Work;
                 end if;
-                Counter.TakeNextClient(OperatorID);
+                Counter.TakeNextClient(OperatorID); -- kolejny klient
             or
                 accept Finish;
                 exit;
@@ -62,9 +62,7 @@ package body Bank_counter_task is
         end loop;
     end Operator;
 
-    -- jakis task typu break manager
-
-    Operators: array(1..5) of OperatorAccess;
+    Operators: array(1..5) of OperatorAccess; -- ilość operatorów
 
     task body Counter is
       Address : Sock_Addr_Type;
@@ -83,18 +81,21 @@ package body Bank_counter_task is
 
     Channel := Stream (Socket);
 
-    for I in 1..5 loop
+    for I in 1..5 loop -- start operatorów
         Operators(I) := new Operator(I);
         Operators(I).Start;
     end loop;
 
     loop
         accept TakeNextClient(OperatorID: Natural) do
-            Integer'Output(Channel, 0);
+            Integer'Output(Channel, 0); -- jak operator się zwolni wysyłamy zero żeby dostać kolejny numer klienta
             NextInQueue := Integer'Input (Channel);
+            if NextInQueue = 0 then -- jeżeli użytkownik chce skońcyć działanie programu to dostajemy 0 i przerywamy
+                GNAT.OS_Lib.OS_Exit (0);
+            end if;
             OpID := OperatorID;
         end TakeNextClient;
-        Operators(OpID).TakeClient(NextInQueue);
+        Operators(OpID).TakeClient(NextInQueue); -- wysyłamy klienta do oparatora
     end loop;
 
   end Counter;

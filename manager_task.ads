@@ -8,6 +8,7 @@ use Ada.Text_IO,
 GNAT.Sockets,
 Ada.Numerics.Float_Random,
 Ada.Integer_Text_IO;
+with GNAT.OS_Lib;
 
 package Manager_task is
 

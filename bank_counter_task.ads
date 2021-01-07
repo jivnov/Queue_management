@@ -5,6 +5,7 @@ with GNAT.Sockets; use GNAT.Sockets;
 with Ada.Calendar; use Ada.Calendar;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Integer_Text_IO; use Ada.Integer_Text_Io;
+with GNAT.OS_Lib;
 
 package Bank_counter_task is
 
@@ -14,7 +15,7 @@ procedure ServeClient(K : Natural; Cl : Integer);
     Gen: Generator;
     OpID : Natural := 0;
 
-   protected type Semaphore_Int (Init_Sem : Integer) is -- counting semaphore
+    protected type Semaphore_Int (Init_Sem : Integer) is -- counting semaphore
        entry Take_Break;
        procedure Back_To_Work;
     private
