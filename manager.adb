@@ -6,7 +6,5 @@ use  Ada.Text_IO;
 procedure Manager is
   pragma Priority (System.Priority'First);
 begin
-  loop
-    null;
-  end loop;
+  null;
 end Manager;

@@ -1,11 +1,4 @@
 package body Manager_task is
-    QueueCounter         : Natural := 1;
-    PriorityQueueCounter : Natural := 1001;
-    Position             : Natural := 0;
-    PriorityPosition     : Natural := 1000;
-    Get_number           : Integer;
-    Acception            : Integer;
-    ExitVar              : Integer := 1;
 
     task body Terminal_Client is -- określenie ilości klientów w kolejce
     begin
@@ -21,10 +14,12 @@ package body Manager_task is
                     PriorityPosition := PriorityPosition + 1; -- numer nowego prior. klienta
                     Put_Line("Numer klienta: " & PriorityPosition'Img);
                 end GetPositionInPriorityQueue;
+            or
+                accept Finish;
+                exit;
             end select;
         end loop;
     end Terminal_Client;
-
 
 
     task body Terminal_Manager is -- określenie pierwszego klienta w kolejkach
@@ -39,11 +34,12 @@ package body Manager_task is
                 accept TakeFromPriorityQueue do
                     PriorityQueueCounter := PriorityQueueCounter + 1; -- pierwzy numer w kolejce prior.
                 end TakeFromPriorityQueue;
+            or
+                accept Finish;
+                exit;
             end select;
         end loop;
     end Terminal_Manager;
-
-
 
 
     task body Manage_Bank_Operators is
@@ -103,8 +99,9 @@ begin
         elsif Get_number = 0 then -- zakończenie działanie programu jeżeli użytkownik wprowadzi 0
             ExitVar := 0;
             Put_Line ("Zakończenie");
-            delay 1.0;
-            GNAT.OS_Lib.OS_Exit (0);
+            Terminal_Client.Finish;
+            Terminal_Manager.Finish;
+            exit;
         else
             Put_Line ("Nieznana liczba"); -- liczby poza 0,1,2 nie są przyjmowane
         end if;
