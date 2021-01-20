@@ -15,12 +15,12 @@ procedure ServeClient(K : Natural; Cl : Integer);
     Gen: Generator;
     OpID : Natural := 0;
 
-    protected type Semaphore_Int (Init_Sem : Integer) is -- counting semaphore
-       entry Take_Break;
+    protected type Break_Manager (Init_Sem : Integer) is -- counting semaphore
+       procedure Take_Break(Approved: out Boolean);
        procedure Back_To_Work;
     private
        Count : Integer := Init_Sem;
-    end Semaphore_Int;
+    end Break_Manager;
 
     task type Operator(OperatorID: Natural := 999) is
         entry Start;

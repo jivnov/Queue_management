@@ -1,10 +1,15 @@
 package body Bank_counter_task is
 
-    protected body Semaphore_Int is
+    protected body Break_Manager is
 
-        entry Take_Break when Count > 0 is
+        procedure Take_Break(Approved: out Boolean) is
             begin
-                Count := Count - 1; -- odejmujemy jedno z "miejsc" jezeli operator na przerwie
+                if (Count > 0) then
+                    Approved := True; -- jeśli można pójść na przerwę, zwracamy Approved = True
+                    Count := Count - 1; -- odejmujemy jedno z "miejsc" jezeli operator na przerwie
+                else
+                    Approved := False; -- jeśli 2 osoby już są na przerwie, to przerwa nie jest dozwolona: Approved == False
+                end if;
         end Take_Break;
 
         procedure Back_To_Work is
@@ -12,9 +17,9 @@ package body Bank_counter_task is
                 Count := Count + 1; -- dodajemy do licznika "miejsce" jak operator skońcy przerwę
         end Back_To_Work;
 
-    end Semaphore_Int;
+    end Break_Manager;
 
-    S : Semaphore_Int (2); -- określamy ile operatorów może być na przerwie
+    S : Break_Manager (2); -- określamy ile operatorów może być na przerwie
 
 
     procedure ServeClient(K : Natural; Cl : Integer) is -- obsługa klienta
@@ -31,7 +36,7 @@ package body Bank_counter_task is
     task body Operator is
         ClientID : Natural := 100500;
         BreakAfter: Integer := 20; -- ile może być klientów przed przerwą
-        isFree : Boolean := True;
+        Approved : Boolean := False;
     begin
         accept Start do
             Put_Line("Operator " & OperatorID'Img & " rozpoczął pracę.");
@@ -48,11 +53,13 @@ package body Bank_counter_task is
                 ServeClient(OperatorID, ClientID);
                 delay 1.5;
                 if BreakAfter = 0 then -- przerwa
-                    S.Take_Break;
-                    Put_Line("Operator " & OperatorID'Img & " ma przerwę");
-                    delay 10.0;
+                    S.Take_Break(Approved);
+                    if (Approved = True) then -- jesli operator dostał pozwolenie żeby pojsc na przerwę
+                        Put_Line("Operator " & OperatorID'Img & " ma przerwę");
+                        delay 10.0;
+                        S.Back_To_Work;
+                    end if;
                     BreakAfter := Integer(Random(Gen) * 10.0 + 5.0); -- nowa ilość klientów przed przerwą
-                    S.Back_To_Work;
                 end if;
                 Counter.TakeNextClient(OperatorID); -- kolejny klient
             or
