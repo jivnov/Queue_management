@@ -1,14 +1,8 @@
 with System;
-with Ada.Text_IO,
-Ada.Integer_Text_IO,
-Ada.Numerics.Discrete_Random,
-Ada.Numerics.Float_Random,
-GNAT.Sockets;
-use Ada.Text_IO,
-GNAT.Sockets,
-Ada.Numerics.Float_Random,
-Ada.Integer_Text_IO;
-with GNAT.OS_Lib;
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
+with GNAT.Sockets; use GNAT.Sockets;
 
 package Manager_task is
 
@@ -16,7 +10,7 @@ package Manager_task is
     PriorityQueueCounter : Natural := 1001;
     Position             : Natural := 0;
     PriorityPosition     : Natural := 1000;
-    GetNumber           : Integer := -1;
+    GetNumber            : Integer := -1;
     Acception            : Integer := 1;
     ExitVar              : Integer := 1;
 

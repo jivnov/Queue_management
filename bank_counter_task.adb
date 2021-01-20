@@ -23,7 +23,7 @@ package body Bank_counter_task is
 
 
     procedure ServeClient(K : Natural; Cl : Integer) is -- obsługa klienta
-       DelayTime : Float := 1.0;
+       DelayTime : Float;
     begin
       Reset(Gen);
       DelayTime := Random(Gen) * 4.0 + 1.0; -- klient moze byc obslugiwany przez od 1 do 5 sekund
@@ -34,8 +34,8 @@ package body Bank_counter_task is
 
 
     task body Operator is
-        ClientID : Natural := 100500;
-        BreakAfter: Integer := 20; -- ile może być klientów przed przerwą
+        ClientID : Natural;
+        BreakAfter: Integer; -- ile może być klientów przed przerwą
         Approved : Boolean := False;
     begin
         accept Start do

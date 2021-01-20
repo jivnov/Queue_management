@@ -1,11 +1,7 @@
 with System;
 with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
-with Ada.Exceptions; use Ada.Exceptions;
 with GNAT.Sockets; use GNAT.Sockets;
-with Ada.Calendar; use Ada.Calendar;
 with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Integer_Text_IO; use Ada.Integer_Text_Io;
-with GNAT.OS_Lib;
 
 package Bank_counter_task is
 
@@ -22,7 +18,7 @@ procedure ServeClient(K : Natural; Cl : Integer);
        Count : Integer := Init_Sem;
     end Break_Manager;
 
-    task type Operator(OperatorID: Natural := 999) is
+    task type Operator(OperatorID: Natural) is
         entry Start;
         entry TakeClient(Pos: in Integer);
         entry Finish;
