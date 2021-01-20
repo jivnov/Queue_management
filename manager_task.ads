@@ -16,7 +16,7 @@ package Manager_task is
     PriorityQueueCounter : Natural := 1001;
     Position             : Natural := 0;
     PriorityPosition     : Natural := 1000;
-    Get_number           : Integer := -1;
+    GetNumber           : Integer := -1;
     Acception            : Integer := 1;
     ExitVar              : Integer := 1;
 

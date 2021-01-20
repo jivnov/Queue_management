@@ -91,13 +91,13 @@ begin
     loop
         Put_Line("Wprowadż liczbę żeby dostać numer w kolejce lub 0 żeby skończyć");
         Put_Line("1 - kolejka zwykła; 2 - kolejka dla osób upoważnionych:");
-        Get(Get_number); -- wprowadzenie licczby od użytkownika
+        Get(GetNumber); -- wprowadzenie licczby od użytkownika
 
-        if Get_number = 1 then
+        if GetNumber = 1 then
             Terminal_Client.GetPositionInQueue; -- zapisywanie do kolejki zwykłej
-        elsif Get_number = 2 then
+        elsif GetNumber = 2 then
             Terminal_Client.GetPositionInPriorityQueue; -- zapisywanie do kolejki prior.
-        elsif Get_number = 0 then -- zakończenie działanie programu jeżeli użytkownik wprowadzi 0
+        elsif GetNumber = 0 then -- zakończenie działanie programu jeżeli użytkownik wprowadzi 0
             ExitVar := 0;
             Put_Line ("Zakończenie");
             Terminal_Client.Finish;
